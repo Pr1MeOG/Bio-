@@ -50,7 +50,14 @@
        VIDEO BG
     ═══════════════════════════ */
     .yt-wrap{position:fixed;inset:0;z-index:0;background:#000;overflow:hidden}
-    .yt-wrap div{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;border:none;pointer-events:none}
+    .yt-wrap #ytf,
+    .yt-wrap #ytf iframe{
+      position:absolute;top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:100vw;height:56.25vw;
+      min-height:100vh;min-width:177.78vh;
+      border:none;pointer-events:none;
+    }
     .overlay{position:fixed;inset:0;z-index:1;background:rgba(0,0,0,.52);pointer-events:none;transition:background .3s}
 
     /* ═══════════════════════════
@@ -286,7 +293,7 @@
       <a class="soc" href="https://instagram.com/pr1me.ownit" target="_blank" title="Instagram — pr1me.ownit">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
-      <a class="soc" href="mailto:abhihekog000@gmail.com" title="Gmail — abhihekog000@gmail.com">
+      <a class="soc" href="/cdn-cgi/l/email-protection#a4c5c6cccdccc1cfcbc3949494e4c3c9c5cdc88ac7cbc9" title="Gmail — abhihekog000@gmail.com">
         <svg width="21" height="16" viewBox="0 0 24 20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="2" width="22" height="17" rx="3"/><polyline points="1,4 12,13 23,4"/></svg>
       </a>
     </div>
@@ -333,7 +340,7 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const DISCORD_ID = '1399462175805935639';
 
 const NAME_LINES = [
@@ -353,7 +360,7 @@ const BIO_LINES = [
   'Just vibing fr... 🌙',
   'Unable to compile emotions ✨',
   'always online never boring 🔥',
-  'Fu*k i love coding music and My Girl 💗 ',
+  'Fu*k i love coding music and 1511 🥹',
   'You changed my life babe... 🥹',
   'chill guy follow for more... 🚀',
 ];
@@ -366,10 +373,11 @@ const PAGES = [
   { id:'HrwB8okpzSg', song:'I want Blood'                     },
 ];
 
-/* profile views — har visit pe +100 */
+/* profile views — random 1-100 per visit */
 !function(){
   let v=+localStorage.getItem('pv_pr1me')||0;
-  v+=100;
+  const add = Math.floor(Math.random()*100)+1; // 1 to 100
+  v += add;
   localStorage.setItem('pv_pr1me',v);
   document.getElementById('vc').textContent=(1247+v).toLocaleString();
 }();
@@ -593,10 +601,9 @@ function connectLanyard(){
     if(m.op===1){hb=setInterval(()=>ws.send(JSON.stringify({op:3})),m.d.heartbeat_interval);ws.send(JSON.stringify({op:2,d:{subscribe_to_id:DISCORD_ID}}));}
     if(m.op===0){setStatus(m.d.discord_status);setActivity(m.d.activities);if(m.d.discord_user)setAvatar(m.d.discord_user.id,m.d.discord_user.avatar);}
   };
-  ws.onclose=()=>{clearInterval(hb);setStatus('offline');setTimeout(connectLanyard,3000);};
-  ws.onerror=()=>ws.close();
-}
-connectLanyard();
-</script>
-</body>
-</html>
+    ws.onclose=()=>{if(hb)clearInterval(hb);};
+    };
+  connectLanyard();
+  </script>
+  </body>
+  </html>

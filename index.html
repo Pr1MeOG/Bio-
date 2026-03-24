@@ -50,7 +50,7 @@
        VIDEO BG
     ═══════════════════════════ */
     .yt-wrap{position:fixed;inset:0;z-index:0;background:#000;overflow:hidden}
-    .yt-wrap iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;border:none;pointer-events:none;transition:opacity .5s}
+    .yt-wrap div{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;border:none;pointer-events:none}
     .overlay{position:fixed;inset:0;z-index:1;background:rgba(0,0,0,.52);pointer-events:none;transition:background .3s}
 
     /* ═══════════════════════════
@@ -60,41 +60,40 @@
     .page.visible{opacity:1;pointer-events:all}
 
     /* ═══════════════════════════
-       CARD — 3D tilt + transparent
+       CARD — pinch on hover
     ═══════════════════════════ */
-    .card-wrap{
-      width:100%;max-width:760px;
-      perspective:1000px;
-    }
+    .card-wrap{width:100%;max-width:760px}
     .card{
       width:100%;
-      /* more transparent */
       background:rgba(15,15,22,.45);
       backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
       border:1px solid rgba(255,255,255,.09);border-radius:18px;
       padding:26px 28px 22px;
-      box-shadow:0 16px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
-      /* tilt transition */
-      transition:transform 0.08s ease, box-shadow 0.08s ease;
-      transform-style:preserve-3d;
-      will-change:transform;
-      /* glint line on hover */
+      box-shadow:0 16px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04);
       position:relative;overflow:hidden;
+      transition:box-shadow 0.35s ease;
     }
-    /* animated border glow on hover */
+    /* pinch squeeze on hover */
+    .card:hover{
+      transform:scaleX(0.972) scaleY(1.008);
+      box-shadow:0 20px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(167,139,250,.2),
+                 inset 0 0 40px rgba(167,139,250,.04);
+    }
+    /* shimmer sweep */
+    .card::after{
+      content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);
+      transition:left 0.7s ease;pointer-events:none;z-index:0;
+    }
+    .card:hover::after{left:160%}
+    /* glow layer */
     .card::before{
       content:'';position:absolute;inset:0;border-radius:18px;
-      background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(56,189,248,.1),transparent 60%);
-      opacity:0;transition:opacity .3s;pointer-events:none;z-index:0;
+      background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(56,189,248,.06),transparent 60%);
+      opacity:0;transition:opacity .35s;pointer-events:none;z-index:0;
     }
     .card:hover::before{opacity:1}
-    .card > *{position:relative;z-index:1}
-
-    /* pull effect — glowing border on sides */
-    .card.tilt-left  {box-shadow:0 16px 60px rgba(0,0,0,.6),-6px 0 24px rgba(167,139,250,.25)}
-    .card.tilt-right {box-shadow:0 16px 60px rgba(0,0,0,.6), 6px 0 24px rgba(56,189,248,.25)}
-    .card.tilt-top   {box-shadow:0 16px 60px rgba(0,0,0,.6), 0 -6px 24px rgba(167,139,250,.25)}
-    .card.tilt-bottom{box-shadow:0 16px 60px rgba(0,0,0,.6), 0  8px 24px rgba(56,189,248,.25)}
+    .card>*{position:relative;z-index:1}
 
     .top-row{display:flex;align-items:flex-start;gap:20px;margin-bottom:20px}
 
@@ -121,17 +120,8 @@
     @keyframes shimmer{to{background-position:200% center}}
     .ncur{display:inline-block;width:2px;height:.85em;background:#a78bfa;vertical-align:text-bottom;margin-left:2px;animation:blink .75s step-end infinite;-webkit-text-fill-color:initial}
 
-    /* ═══════════════════════════
-       BADGE BOX — outlined transparent
-    ═══════════════════════════ */
-    .badge-box{
-      display:flex;align-items:center;gap:4px;flex-wrap:wrap;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:8px;
-      padding:4px 7px;
-      backdrop-filter:blur(8px);
-    }
+    /* badge box */
+    .badge-box{display:flex;align-items:center;gap:4px;flex-wrap:wrap;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:4px 7px;backdrop-filter:blur(8px)}
     .bdg{width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:transform .18s;position:relative}
     .bdg:hover{transform:scale(1.35) translateY(-2px)}
     .bdg img{width:22px;height:22px;object-fit:contain;filter:drop-shadow(0 1px 4px rgba(0,0,0,.7))}
@@ -155,12 +145,45 @@
     .soc{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:background .18s,transform .18s}
     .soc:hover{background:rgba(255,255,255,.16);transform:translateY(-3px) scale(1.1)}
 
-    .bot{display:flex;align-items:center;justify-content:space-between}
-    .views{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:99px;padding:5px 13px;font-size:12px;font-weight:600;color:rgba(255,255,255,.7)}
-    .np{font-size:9px;color:rgba(255,255,255,.35);display:none;align-items:center;gap:5px;max-width:220px;overflow:hidden}
+    /* ── BOT ROW ── */
+    .bot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .views{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:99px;padding:5px 13px;font-size:12px;font-weight:600;color:rgba(255,255,255,.7);white-space:nowrap}
+    .np{font-size:9px;color:rgba(255,255,255,.35);display:none;align-items:center;gap:5px;overflow:hidden;max-width:160px}
     .np-dot{width:5px;height:5px;border-radius:50%;background:#23d18b;flex-shrink:0;animation:blink 1.2s ease-in-out infinite}
     .np-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Share Tech Mono',monospace}
 
+    /* ══════════════════════════════════════
+       AESTHETIC CLOCK
+    ══════════════════════════════════════ */
+    .clock-wrap{
+      display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0;
+    }
+    .clock-time{
+      font-family:'Share Tech Mono',monospace;
+      font-size:18px;font-weight:700;
+      letter-spacing:2px;
+      /* same shimmer gradient as username */
+      background:linear-gradient(90deg,#fff 0%,#a78bfa 50%,#38bdf8 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1;
+      text-shadow:none;
+    }
+    .clock-date{
+      font-family:'Share Tech Mono',monospace;
+      font-size:9px;letter-spacing:1.5px;
+      color:rgba(255,255,255,.3);text-transform:uppercase;
+      line-height:1;
+    }
+    .clock-tz{
+      font-family:'Share Tech Mono',monospace;
+      font-size:8px;letter-spacing:1px;
+      color:rgba(167,139,250,.5);
+      line-height:1;
+    }
+
+    /* ═══════════════════════════
+       CONTROLS
+    ═══════════════════════════ */
     .cbar{width:100%;max-width:760px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
     .sldr{display:flex;align-items:center;gap:7px;background:rgba(15,15,22,.78);border:1px solid rgba(255,255,255,.08);border-radius:99px;padding:6px 14px;flex:1;min-width:100px;max-width:160px}
     .sldr svg{flex-shrink:0;opacity:.6}
@@ -182,7 +205,8 @@
       .arow{justify-content:center}
       .username{font-size:20px}
       .av-ring{width:74px;height:74px}
-      .bot{flex-direction:column;gap:8px}
+      .bot{flex-direction:column;align-items:center;gap:8px}
+      .clock-wrap{align-items:center}
       .np{max-width:100%}
       .sldr{min-width:80px;max-width:120px;padding:5px 10px}
     }
@@ -215,8 +239,7 @@
     replace <code>YOUR_DISCORD_ID</code> in JS.
   </div>
 
-  <!-- card-wrap for perspective -->
-  <div class="card-wrap" id="cardWrap">
+  <div class="card-wrap">
    <div class="card" id="card">
     <div class="top-row">
       <div class="avatar-wrap">
@@ -229,14 +252,13 @@
       <div class="info">
         <div class="name-row">
           <span class="username" id="nameEl"></span>
-          <!-- BADGE BOX — outlined transparent container -->
           <div class="badge-box">
             <div class="bdg" title="Staff"><img src="https://laggglaggg.netlify.app/assets/staff.gif" onerror="this.closest('.bdg').style.display='none'"></div>
             <div class="bdg" title="Partner"><img src="https://laggglaggg.netlify.app/assets/partner.gif" onerror="this.closest('.bdg').style.display='none'"></div>
             <div class="bdg" title="Bug Bounty"><img src="https://laggglaggg.netlify.app/assets/bug_bounty.gif" onerror="this.closest('.bdg').style.display='none'"></div>
             <div class="bdg" title="Rule Maker"><img src="https://laggglaggg.netlify.app/assets/rule_maker.gif" onerror="this.closest('.bdg').style.display='none'"></div>
-            <div class="bdg" title="Early Verified Developer"><img src="https://laggglaggg.netlify.app/assets/verified.gif" onerror="this.closest('.bdg').style.display='none'"></div>
-            <div class="bdg" title="Active Developer"><img src="https://laggglaggg.netlify.app/assets/developer.png" onerror="this.closest('.bdg').style.display='none'"></div>
+            <div class="bdg" title="Verified"><img src="https://laggglaggg.netlify.app/assets/verified.gif" onerror="this.closest('.bdg').style.display='none'"></div>
+            <div class="bdg" title="Developer"><img src="https://laggglaggg.netlify.app/assets/developer.png" onerror="this.closest('.bdg').style.display='none'"></div>
             <div class="bdg" title="Boost"><img src="https://cdn.discordapp.com/emojis/1289480527023308842.webp?size=96&animated=true" onerror="this.closest('.bdg').style.display='none'"></div>
           </div>
         </div>
@@ -270,13 +292,23 @@
     </div>
 
     <div class="bot">
+      <!-- Views pill -->
       <div class="views">
         <svg width="14" height="10" viewBox="0 0 20 14" fill="white"><path d="M10 0C5 0 .73 3.11 0 7c.73 3.89 5 7 10 7s9.27-3.11 10-7C19.27 3.11 15 0 10 0zm0 11.67A4.67 4.67 0 1 1 10 2.33a4.67 4.67 0 0 1 0 9.34zM10 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
         <span id="vc">1,247</span>
       </div>
+
+      <!-- Now playing -->
       <div class="np" id="npEl">
         <span class="np-dot"></span>
         <span class="np-title" id="npt"></span>
+      </div>
+
+      <!-- ══ AESTHETIC CLOCK (IST) ══ -->
+      <div class="clock-wrap">
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">MON, 01 JAN</div>
+        <div class="clock-tz">IST · UTC+5:30</div>
       </div>
     </div>
    </div>
@@ -307,7 +339,7 @@ const DISCORD_ID = '1399462175805935639';
 const NAME_LINES = [
   'Pr1Me',
   'Gamer X Developer ',
-  'Only yours 1511 🖤',
+  'committed  🖤',
 ];
 
 const SPLASH_LINES = [
@@ -317,29 +349,55 @@ const SPLASH_LINES = [
 
 const BIO_LINES = [
   'Inspired by laggglaggg 👀',
-  'Pr1Me here' ,
+  'Pr1Me here',
   'Just vibing fr... 🌙',
   'Unable to compile emotions ✨',
   'always online never boring 🔥',
-  'Fu*k i love coding music and 1511 🥹',
+  'Fu*k i love coding music and My Girl 💗 ',
   'You changed my life babe... 🥹',
   'chill guy follow for more... 🚀',
 ];
 
 const PAGES = [
-  { id:'cUz6I00_fv8',    song:'Fav One'                          },
-  { id:'AzUT2KkfC_A',    song:'Red Dead Redemption 2 | Bad Boys' },
-  { id:'I7Q3izYmevc',    song:'Special One...'       },
-  { id:'SstoiAl7Xg8',    song:'SKORN - VUKEINE'                  },
-  { id:'HrwB8okpzSg',    song:'I want Blood'                     },
+  { id:'cUz6I00_fv8', song:'Fav One'                          },
+  { id:'AzUT2KkfC_A', song:'Red Dead Redemption 2 | Bad Boys' },
+  { id:'I7Q3izYmevc', song:'Special One...'                   },
+  { id:'SstoiAl7Xg8', song:'SKORN - VUKEINE'                  },
+  { id:'HrwB8okpzSg', song:'I want Blood'                     },
 ];
 
-/* profile views */
+/* profile views — har visit pe +100 */
 !function(){
   let v=+localStorage.getItem('pv_pr1me')||0;
-  localStorage.setItem('pv_pr1me',++v);
+  v+=100;
+  localStorage.setItem('pv_pr1me',v);
   document.getElementById('vc').textContent=(1247+v).toLocaleString();
 }();
+
+/* ══════════════════════════════════════
+   CLOCK — IST (UTC+5:30), ticks every sec
+══════════════════════════════════════ */
+function updateClock(){
+  const now = new Date();
+  // IST = UTC + 5:30
+  const utc = now.getTime() + now.getTimezoneOffset()*60000;
+  const ist = new Date(utc + 5.5*3600000);
+
+  const hh = String(ist.getHours()).padStart(2,'0');
+  const mm = String(ist.getMinutes()).padStart(2,'0');
+  const ss = String(ist.getSeconds()).padStart(2,'0');
+
+  const days  = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months= ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const day   = days[ist.getDay()];
+  const date  = String(ist.getDate()).padStart(2,'0');
+  const month = months[ist.getMonth()];
+
+  document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
+  document.getElementById('clockDate').textContent = `${day}, ${date} ${month}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
 
 /* typewriter */
 function typeLoop(lines,el,speed,delSpeed,pauseOn,pauseOff,cursorClass){
@@ -379,15 +437,8 @@ function enterSite(){
   if(ytPlayer&&ytPlayer.playVideo){ytPlayer.unMute();ytPlayer.playVideo();}
 }
 
-/* ══════════════════════════════════════════════
-   YOUTUBE IFrame API
-   Fix: poll getCurrentTime every second
-   Restart 6 seconds BEFORE video ends
-   → endscreen/recommendations never appear
-══════════════════════════════════════════════ */
-let ytPlayer=null;
-let endWatcher=null;
-
+/* YouTube */
+let ytPlayer=null,endWatcher=null;
 const tag=document.createElement('script');
 tag.src='https://www.youtube.com/iframe_api';
 document.head.appendChild(tag);
@@ -396,39 +447,24 @@ window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('ytf',{
     width:'100%',height:'100%',
     videoId:PAGES[0].id,
-    playerVars:{
-      autoplay:1,mute:1,
-      controls:0,rel:0,fs:0,
-      modestbranding:1,iv_load_policy:3,
-      disablekb:1,playsinline:1,
-    },
+    playerVars:{autoplay:1,mute:1,controls:0,rel:0,fs:0,modestbranding:1,iv_load_policy:3,disablekb:1,playsinline:1},
     events:{
-      onReady:function(e){
-        e.target.setVolume(70);
-        e.target.playVideo();
-        startEndWatcher();
-      },
+      onReady:function(e){e.target.setVolume(70);e.target.playVideo();startEndWatcher();},
       onStateChange:function(e){
-        // 1 = playing → start watcher
-        if(e.data===1) startEndWatcher();
-        // 0 = ended (fallback) → restart
-        if(e.data===0){ ytPlayer.seekTo(0);ytPlayer.playVideo(); }
+        if(e.data===1)startEndWatcher();
+        if(e.data===0){ytPlayer.seekTo(0);ytPlayer.playVideo();}
       }
     }
   });
 };
 
-/* poll every 500ms — restart 8 sec before end */
 function startEndWatcher(){
   if(endWatcher)clearInterval(endWatcher);
   endWatcher=setInterval(()=>{
     try{
       const cur=ytPlayer.getCurrentTime();
       const dur=ytPlayer.getDuration();
-      if(dur>0 && (dur-cur)<=8){
-        ytPlayer.seekTo(0);
-        ytPlayer.playVideo();
-      }
+      if(dur>0&&(dur-cur)<=8){ytPlayer.seekTo(0);ytPlayer.playVideo();}
     }catch(e){}
   },500);
 }
@@ -449,60 +485,65 @@ document.querySelectorAll('.dbtn').forEach((b,i)=>{
   b.addEventListener('click',()=>{if(entered)loadPage(i);});
 });
 
-/* volume */
 document.getElementById('vol').addEventListener('input',function(){
   if(ytPlayer&&ytPlayer.setVolume)ytPlayer.setVolume(+this.value);
 });
 
-/* brightness */
 document.getElementById('bright').addEventListener('input',function(){
   document.getElementById('overlay').style.background=`rgba(0,0,0,${1-(+this.value/100)})`;
 });
 
 /* ══════════════════════════════════════════════
-   3D CARD TILT on mousemove
-   Mouse on left → tilts left, right → tilts right
-   top → tilts up, bottom → tilts down
+   MAGNET PULL EFFECT
+   Mouse moves near card → card gets pulled toward mouse
+   Like a magnet attracting the card
 ══════════════════════════════════════════════ */
-const card=document.getElementById('card');
-const cardWrap=document.getElementById('cardWrap');
+const card = document.getElementById('card');
+let cardAnim = null;
+let targetX = 0, targetY = 0;
+let currentX = 0, currentY = 0;
 
-cardWrap.addEventListener('mousemove',e=>{
-  const r=card.getBoundingClientRect();
-  const x=e.clientX-r.left;   // 0 to width
-  const y=e.clientY-r.top;    // 0 to height
-  const cx=r.width/2;
-  const cy=r.height/2;
+document.addEventListener('mousemove', e => {
+  const r = card.getBoundingClientRect();
+  const cardCX = r.left + r.width / 2;
+  const cardCY = r.top + r.height / 2;
 
-  // normalized: -1 to 1
-  const nx=(x-cx)/cx;
-  const ny=(y-cy)/cy;
+  // distance from mouse to card center
+  const dx = e.clientX - cardCX;
+  const dy = e.clientY - cardCY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-  const maxTilt=8; // degrees
-  const rotY= nx*maxTilt;
-  const rotX=-ny*maxTilt;
+  // pull strength — closer = stronger, fades beyond 400px
+  const maxDist = 400;
+  const maxPull = 18; // max px shift
 
-  card.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.012)`;
-
-  // side glow classes
-  card.classList.remove('tilt-left','tilt-right','tilt-top','tilt-bottom');
-  if(nx < -0.4) card.classList.add('tilt-left');
-  else if(nx > 0.4) card.classList.add('tilt-right');
-  if(ny < -0.4) card.classList.add('tilt-top');
-  else if(ny > 0.4) card.classList.add('tilt-bottom');
+  if (dist < maxDist) {
+    const strength = (1 - dist / maxDist);
+    targetX = dx * strength * (maxPull / 100);
+    targetY = dy * strength * (maxPull / 100);
+  } else {
+    targetX = 0;
+    targetY = 0;
+  }
 });
 
-cardWrap.addEventListener('mouseleave',()=>{
-  card.style.transform='rotateX(0deg) rotateY(0deg) scale(1)';
-  card.classList.remove('tilt-left','tilt-right','tilt-top','tilt-bottom');
-});
+// smooth lerp animation
+function animMagnet() {
+  currentX += (targetX - currentX) * 0.08;
+  currentY += (targetY - currentY) * 0.08;
 
-/* custom cursor */
+  // also slight scale up when pulled
+  const pull = Math.sqrt(currentX * currentX + currentY * currentY);
+  const sc = 1 + pull * 0.0008;
+
+  card.style.transform = `translate(${currentX}px, ${currentY}px) scale(${sc})`;
+  requestAnimationFrame(animMagnet);
+}
+animMagnet();
 const dot=document.getElementById('cursor-dot');
 const ring=document.getElementById('cursor-ring');
 const label=document.getElementById('cursor-label');
 let mx=0,my=0,rx=0,ry=0;
-
 document.addEventListener('mousemove',e=>{
   mx=e.clientX;my=e.clientY;
   dot.style.left=mx+'px';dot.style.top=my+'px';
@@ -525,17 +566,10 @@ document.addEventListener('mouseenter',()=>{dot.style.opacity='1';ring.style.opa
 /* lanyard */
 const STXT={online:'online',idle:'idle',dnd:'do not disturb',offline:'offline'};
 const AICO={0:'🎮',1:'🎵',2:'🎵',3:'📺',4:'✏️',5:'🎙️'};
-
 function setStatus(s){
   s=s||'offline';
-  ['online','idle','dnd','offline'].forEach(c=>{
-    document.getElementById('ring').classList.remove(c);
-    document.getElementById('pip').classList.remove(c);
-    document.getElementById('sline').classList.remove(c);
-  });
-  document.getElementById('ring').classList.add(s);
-  document.getElementById('pip').classList.add(s);
-  document.getElementById('sline').classList.add(s);
+  ['online','idle','dnd','offline'].forEach(c=>{document.getElementById('ring').classList.remove(c);document.getElementById('pip').classList.remove(c);document.getElementById('sline').classList.remove(c);});
+  document.getElementById('ring').classList.add(s);document.getElementById('pip').classList.add(s);document.getElementById('sline').classList.add(s);
   document.getElementById('stxt').textContent=STXT[s]||'offline';
 }
 function setActivity(acts){
